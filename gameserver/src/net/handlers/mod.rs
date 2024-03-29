@@ -71,7 +71,7 @@ macro_rules! dummy {
 }
 
 dummy! {
-    SceneEntityMove,
+    // SceneEntityMove,
     GetLevelRewardTakenList,
     GetRogueScoreRewardInfo,
     GetGachaInfo,
