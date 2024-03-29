@@ -1,38 +1,31 @@
-use super::*;
+use std::collections::BTreeMap;
 
-static STARTING_LINEUP: [u32; 4] = [1309, 1308, 1307, 1315];
+use crate::net::tools::{self, AvatarJson};
+
+use super::*;
 
 pub async fn on_get_all_lineup_data_cs_req(
     session: &mut PlayerSession,
     _body: &GetAllLineupDataCsReq,
 ) -> Result<()> {
+    let player = tools::JsonData::load().await;
+    let lineup = LineupInfo {
+        extra_lineup_type: ExtraLineupType::LineupNone.into(),
+        name: "Squad 1".to_string(),
+        // mp: 5,
+        // leader_slot: 0,
+        // max_mp: 5,
+        avatar_list: AvatarJson::to_lineup_avatars(&player.lineups, &player.avatars),
+        ..Default::default()
+    };
+
+
     session
         .send(
             CMD_GET_ALL_LINEUP_DATA_SC_RSP,
             GetAllLineupDataScRsp {
-                retcode: 0,
-                cur_index: 0,
-                lineup_list: vec![LineupInfo {
-                    plane_id: 10001,
-                    name: String::from("Lineup 1"),
-                    index: 0,
-                    avatar_list: STARTING_LINEUP
-                        .iter()
-                        .enumerate()
-                        .map(|(idx, id)| LineupAvatar {
-                            id: *id,
-                            slot: idx as u32,
-                            hp: 10000,
-                            sp: Some(AmountInfo {
-                                cur_amount: 10000,
-                                max_amount: 10000,
-                            }),
-                            satiety: 100,
-                            avatar_type: 3,
-                        })
-                        .collect(),
-                    ..Default::default()
-                }],
+                lineup_list: vec![lineup],
+                ..Default::default()
             },
         )
         .await
@@ -42,35 +35,140 @@ pub async fn on_get_cur_lineup_data_cs_req(
     session: &mut PlayerSession,
     _body: &GetCurLineupDataCsReq,
 ) -> Result<()> {
+    let player = tools::JsonData::load().await;
+        let mut lineup = LineupInfo {
+        extra_lineup_type: ExtraLineupType::LineupNone.into(),
+        name: "Squad 1".to_string(),
+        // mp: 5,
+        // leader_slot: 0,
+        // max_mp: 5,
+        ..Default::default()
+    };
+
+    let avatar_ids = player
+        .avatars
+        .iter()
+        .map(|(_, v)| v.avatar_id)
+        .collect::<Vec<_>>();
+
+    let mut avatars = player
+        .lineups
+        .iter()
+        .filter(|(_slot, v)| v > &&0 && avatar_ids.contains(v))
+        .map(|(slot, avatar_id)| {
+            player
+                .avatars
+                .get(avatar_id)
+                .unwrap()
+                .to_lineup_avatar_proto(*slot)
+        })
+        .collect::<Vec<LineupAvatar>>();
+
+    lineup.avatar_list.append(&mut avatars);
+
+
     session
         .send(
             CMD_GET_CUR_LINEUP_DATA_SC_RSP,
             GetCurLineupDataScRsp {
-                retcode: 0,
-                lineup: Some(LineupInfo {
-                    plane_id: 10001,
-                    name: String::from("Lineup 1"),
-                    index: 0,
-                    avatar_list: STARTING_LINEUP
-                        .iter()
-                        .enumerate()
-                        .map(|(idx, id)| LineupAvatar {
-                            id: *id,
-                            slot: idx as u32,
-                            hp: 10000,
-                            sp: Some(AmountInfo {
-                                cur_amount: 10000,
-                                max_amount: 10000,
-                            }),
-                            satiety: 100,
-                            avatar_type: 3,
-                        })
-                        .collect(),
-                    ..Default::default()
-                }),
+                lineup: Some(lineup),
+                ..Default::default()
             },
         )
         .await
+}
+
+pub async fn on_join_lineup_cs_req(
+    session: &mut PlayerSession,
+    body: &JoinLineupCsReq,
+) -> Result<()> {
+
+    // update lineups
+    // TODO: FIX THESE SHIT
+    {
+        let mut player = tools::JsonData::load().await;        
+        let lineups = &mut player.lineups;
+        lineups.insert(body.slot, body.base_avatar_id);
+        player.save_lineup().await;
+    }
+
+    {
+        let player = tools::JsonData::load().await;        
+        let lineups = &player.lineups;
+
+        refresh_lineup(session, &lineups, &player.avatars).await?;
+    }
+
+    session.send(CMD_JOIN_LINEUP_SC_RSP, JoinLineupScRsp::default())
+        .await?;
+
+    Ok(())
+}
+
+pub async fn on_replace_lineup_cs_req(
+    _session: &mut PlayerSession,
+    req: &ReplaceLineupCsReq,
+) -> Result<()> {
+    {
+        let mut player = tools::JsonData::load().await;        
+
+        let lineups = &mut player.lineups;
+        for (slot, avatar_id) in &mut *lineups {
+            if let Some(lineup) = req.jkifflmenfn.get(*slot as usize) {
+                *avatar_id = lineup.id;
+            } else {
+                *avatar_id = 0;
+            }
+        }
+        player.save_lineup().await;
+    }
+
+    {
+        let player = tools::JsonData::load().await;        
+        let lineups = &player.lineups;
+
+        refresh_lineup(_session, &lineups, &player.avatars).await?;
+    }
+
+    _session.send(CMD_JOIN_LINEUP_SC_RSP, JoinLineupScRsp::default())
+        .await?;
+
+    Ok(())
+}
+
+pub async fn on_quit_lineup_cs_req(
+    _session: &mut PlayerSession,
+    _: &QuitLineupCsReq,
+) -> Result<()> {
+    _session.send(CMD_JOIN_LINEUP_SC_RSP, JoinLineupScRsp::default())
+        .await?;
+
+    Ok(())
+}
+
+async fn refresh_lineup(
+    sess: &mut PlayerSession,
+    lineups: &BTreeMap<u32, u32>,
+    avatars: &BTreeMap<u32, AvatarJson>,
+) -> Result<()> {
+    let lineup = LineupInfo {
+        extra_lineup_type: ExtraLineupType::LineupNone.into(),
+        name: "Squad 1".to_string(),
+
+        avatar_list: AvatarJson::to_lineup_avatars(lineups, avatars),
+        ..Default::default()
+    };
+
+    sess.send(
+        CMD_SYNC_LINEUP_NOTIFY,
+        SyncLineupNotify {
+            lineup: Some(lineup),
+            reason_list: vec![]
+        },
+    )
+    .await?;
+
+    Ok(())
 }
 
 pub async fn on_change_lineup_leader_cs_req(
