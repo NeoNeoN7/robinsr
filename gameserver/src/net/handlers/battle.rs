@@ -11,7 +11,7 @@ pub async fn on_start_cocoon_stage_cs_req(
     let mut battle_info = SceneBattleInfo {
         stage_id: player.battle_config.stage_id,
         logic_random_seed: 4444,
-        battle_id: 1,
+        // battle_id: 1,
         kimmjioaodn: player.battle_config.cycle_count,
         ..Default::default()
     };
@@ -161,7 +161,7 @@ pub async fn on_pve_battle_result_cs_req(
             PveBattleResultScRsp {
                 retcode: 0,
                 end_status: body.end_status,
-                battle_id: body.battle_id,
+                // battle_id: body.battle_id,
                 ..Default::default()
             },
         )

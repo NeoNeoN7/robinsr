@@ -1,4 +1,4 @@
-use crate::util;
+use crate::{net::tools::JsonData, util};
 
 use super::*;
 
@@ -22,15 +22,16 @@ pub async fn on_get_hero_basic_type_info_cs_req(
     session: &mut PlayerSession,
     _body: &GetHeroBasicTypeInfoCsReq,
 ) -> Result<()> {
+    let mc = JsonData::load().await.main_character;
     session
         .send(
             CMD_GET_HERO_BASIC_TYPE_INFO_SC_RSP,
             GetHeroBasicTypeInfoScRsp {
                 retcode: 0,
-                gender: Gender::Man.into(),
-                cur_basic_type: HeroBasicType::BoyWarrior.into(),
-                basic_type_info_list: vec![HeroBasicTypeInfo {
-                    basic_type: HeroBasicType::BoyWarrior.into(),
+                gender: mc.get_gender().into(),
+                cur_basic_type: mc.get_type().into(),
+                basic_type_info_list:vec![HeroBasicTypeInfo {
+                    basic_type: mc.get_type().into(),
                     ..Default::default()
                 }],
                 ..Default::default()

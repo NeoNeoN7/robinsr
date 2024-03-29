@@ -135,16 +135,15 @@ impl AvatarJson {
     }
 
     pub fn to_lineup_avatars(
-        lineups: &BTreeMap<u32, u32>,
-        avatars: &BTreeMap<u32, AvatarJson>,
+        player: &JsonData,
     ) -> Vec<LineupAvatar> {
-        let avatar_ids = avatars.iter().map(|(_, v)| v.avatar_id).collect::<Vec<_>>();
+        let avatar_ids = player.avatars.iter().map(|(_, v)| &v.avatar_id).collect::<Vec<_>>();
 
-        lineups
+        player.lineups
             .iter()
             .filter(|(_slot, v)| v > &&0 && avatar_ids.contains(v))
             .map(|(slot, avatar_id)| {
-                avatars
+                player.avatars
                     .get(avatar_id)
                     .unwrap()
                     .to_lineup_avatar_proto(*slot)
@@ -540,6 +539,40 @@ pub enum MainCharacter {
     FemalePreservation = 8004,
     MaleHarmony = 8005,
     FemaleHarmony = 8006,
+}
+
+impl MainCharacter {
+    // pub fn to_vec() -> Vec<MainCharacter> {
+    //     return vec![
+    //         MainCharacter::MalePyhsical, 
+    //         MainCharacter::FemalePhysical, 
+            
+    //         MainCharacter::MalePreservation, 
+    //         MainCharacter::FemalePreservation, 
+            
+    //         MainCharacter::MaleHarmony, 
+    //         MainCharacter::FemaleHarmony
+    //     ]
+    // }
+
+    pub fn get_gender(&self) -> Gender {
+        if *self as u32 % 2 == 1 {
+            Gender::Man
+        } else {
+            Gender::Woman
+        }
+    }
+
+    pub fn get_type(&self) -> HeroBasicType {
+        match *self {
+            Self::MalePyhsical => HeroBasicType::BoyWarrior,
+            Self::FemalePhysical => HeroBasicType::GirlWarrior,
+            Self::MalePreservation => HeroBasicType::BoyKnight,
+            Self::FemalePreservation => HeroBasicType::GirlKnight,
+            Self::MaleHarmony => HeroBasicType::BoyShaman,
+            Self::FemaleHarmony => HeroBasicType::GirlShaman,
+        }
+    }
 }
 
 impl Default for MainCharacter {

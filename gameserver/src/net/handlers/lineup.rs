@@ -1,6 +1,4 @@
-use std::collections::BTreeMap;
-
-use crate::net::tools::{self, AvatarJson};
+use crate::net::tools::{self, AvatarJson, JsonData};
 
 use super::*;
 
@@ -15,7 +13,7 @@ pub async fn on_get_all_lineup_data_cs_req(
         // mp: 5,
         // leader_slot: 0,
         // max_mp: 5,
-        avatar_list: AvatarJson::to_lineup_avatars(&player.lineups, &player.avatars),
+        avatar_list: AvatarJson::to_lineup_avatars(&player),
         ..Default::default()
     };
 
@@ -88,15 +86,18 @@ pub async fn on_join_lineup_cs_req(
     {
         let mut player = tools::JsonData::load().await;        
         let lineups = &mut player.lineups;
-        lineups.insert(body.slot, body.base_avatar_id);
+        lineups.insert(body.slot,  if body.base_avatar_id > 8000 {
+            player.main_character as u32
+        } else  {
+            body.base_avatar_id
+        });
         player.save_lineup().await;
     }
 
     {
         let player = tools::JsonData::load().await;        
-        let lineups = &player.lineups;
 
-        refresh_lineup(session, &lineups, &player.avatars).await?;
+        refresh_lineup(session,&player).await?;
     }
 
     session.send(CMD_JOIN_LINEUP_SC_RSP, JoinLineupScRsp::default())
@@ -115,7 +116,11 @@ pub async fn on_replace_lineup_cs_req(
         let lineups = &mut player.lineups;
         for (slot, avatar_id) in &mut *lineups {
             if let Some(lineup) = req.jkifflmenfn.get(*slot as usize) {
-                *avatar_id = lineup.id;
+                *avatar_id = if lineup.id > 8000 {
+                    player.main_character as u32
+                } else  {
+                    lineup.id
+                };
             } else {
                 *avatar_id = 0;
             }
@@ -125,9 +130,8 @@ pub async fn on_replace_lineup_cs_req(
 
     {
         let player = tools::JsonData::load().await;        
-        let lineups = &player.lineups;
 
-        refresh_lineup(_session, &lineups, &player.avatars).await?;
+        refresh_lineup(_session, &player).await?;
     }
 
     _session.send(CMD_JOIN_LINEUP_SC_RSP, JoinLineupScRsp::default())
@@ -148,14 +152,13 @@ pub async fn on_quit_lineup_cs_req(
 
 async fn refresh_lineup(
     sess: &mut PlayerSession,
-    lineups: &BTreeMap<u32, u32>,
-    avatars: &BTreeMap<u32, AvatarJson>,
+    player: &JsonData
 ) -> Result<()> {
     let lineup = LineupInfo {
         extra_lineup_type: ExtraLineupType::LineupNone.into(),
         name: "Squad 1".to_string(),
 
-        avatar_list: AvatarJson::to_lineup_avatars(lineups, avatars),
+        avatar_list: AvatarJson::to_lineup_avatars(&player),
         ..Default::default()
     };
 
