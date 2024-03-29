@@ -1,4 +1,5 @@
 # RobinSR
+Original: [https://git.xeondev.com/reversedrooms/RobinSR/](https://git.xeondev.com/reversedrooms/RobinSR/)
 
 A Server emulator for the game [`Honkai: Star Rail`](https://hsr.hoyoverse.com/en-us/)
 ![screenshot](https://git.xeondev.com/reversedrooms/RobinSR/raw/branch/master/screenshot.png)
