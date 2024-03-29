@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 use proto::*;
 
+use super::tools_res::{MapEntrance, MazePlane, SimpleLevelGroup, GAME_RESOURCES};
+
 // AVATAR
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct AvatarJson {
@@ -29,6 +31,7 @@ pub struct AvatarData {
     pub skills: BTreeMap<u32, u32>,
 }
 
+#[allow(dead_code)]
 impl AvatarJson {
     pub fn to_avatar_proto(
         &self,
@@ -195,6 +198,7 @@ pub struct Lightcone {
     pub internal_uid: u32,
 }
 
+#[allow(dead_code)]
 impl Lightcone {
     pub fn to_equipment_proto(&self) -> Equipment {
         Equipment {
@@ -247,6 +251,7 @@ pub struct SubAffix {
     pub step: u32,
 }
 
+#[allow(dead_code)]
 impl Relic {
     pub fn to_relic_proto(&self) -> proto::Relic {
         proto::Relic {
@@ -631,7 +636,25 @@ impl JsonData {
             scene: self.scene.clone()
         }).unwrap().as_bytes()).await;
     }
+    
+    pub async fn get_level_group(
+        &self,
+        entry_id: u32,
+    ) -> Option<(SimpleLevelGroup, MapEntrance, Option<MazePlane>)> {
+        let resources = &GAME_RESOURCES;
+        let enterance = resources.map_entrance.get(&entry_id);
 
+        if let Some(enterance) = enterance {
+            let plane = resources.maze_plane.get(&enterance.plane_id);
+            if let Some(level) = resources
+                .level_group
+                .get(&format!("P{}_F{}", enterance.plane_id, enterance.floor_id))
+            {
+                // TODO: use reference somehow, not cloning
+                return Some((level.clone(), enterance.clone(), plane.cloned()));
+            };
+        }
+
+        None
+    }
 }
-
-

@@ -1241,7 +1241,7 @@ trait_handler! {
     // SetCurInteractEntityScRsp 1497;
     // SceneCastSkillCsReq 1402;
     StartCocoonStageCsReq 1408;
-    // GetSceneMapInfoCsReq 1470;
+    Fkjoeabiioe 1470; //getscenemapinfocsreq
     // SceneEntityMoveScRsp 1448;
     // DeactivateFarmElementScRsp 1467;
     // SetCurInteractEntityCsReq 1491;
@@ -1253,7 +1253,7 @@ trait_handler! {
     // StartCocoonStageScRsp 1454;
     // SceneCastSkillCostMpScRsp 1433;
     // GroupStateChangeCsReq 1476;
-    // SceneEntityMoveCsReq 1434;
+    SceneEntityMoveCsReq 1434;
     // GetUnlockTeleportScRsp 1469;
     // GameplayCounterUpdateScNotify 1478;
     // SceneEnterStageScRsp 1456;
@@ -1263,7 +1263,7 @@ trait_handler! {
     // GetSpringRecoverDataCsReq 1466;
     // SceneEntityTeleportScRsp 1415;
     // SetClientPausedScRsp 1465;
-    // EnterSceneCsReq 1472;
+    Lckgkdehclb 1472; // enterscenecsreq
     // GetAllServerPrefsDataScRsp 6148;
     // GetServerPrefsDataCsReq 6162;
     // UpdateServerPrefsDataScRsp 6109;
