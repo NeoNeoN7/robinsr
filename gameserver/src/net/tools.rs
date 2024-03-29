@@ -497,7 +497,7 @@ pub struct JsonData {
     pub main_character: MainCharacter,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct JsonData2 {
     #[serde(default)]
     pub lineups: BTreeMap<u32, u32>,
@@ -507,6 +507,23 @@ pub struct JsonData2 {
     pub scene: Scene,
     #[serde(default)]
     pub main_character: MainCharacter,
+}
+
+impl Default for JsonData2 {
+    fn default() -> Self {
+        let mut lineups = BTreeMap::<u32, u32>::new();
+        lineups.insert(0, 8006);
+        lineups.insert(1, 0);
+        lineups.insert(2, 0);
+        lineups.insert(3, 0);
+
+        Self {
+            lineups ,
+            position: Default::default(),
+            main_character: Default::default(),
+            scene: Default::default()
+        }
+    }
 }
 
 
@@ -538,13 +555,25 @@ impl JsonData {
         };
 
         let json2: JsonData2 = serde_json::from_str(&tokio::fs::read_to_string("persistent").await.unwrap_or_default()).unwrap_or_default();
-
         json.lineups = json2.lineups;
         json.position = json2.position;
         json.scene = json2.scene;
         json.main_character = json2.main_character;
 
+        json.verify_lineup().await;
+
         json
+    }
+
+    async fn verify_lineup(&mut self) {
+        if self.lineups.len() == 0 {
+            self.lineups = BTreeMap::<u32, u32>::from([(0, 8006), (1, 0), (2, 0),(3, 0)])
+        } else if self.lineups.len() < 4 {
+            for i in self.lineups.len()..4 {
+                self.lineups.insert(i as u32, 0);
+            }
+        }
+        self.save().await;
     }
 
     async fn create_dummy() -> Self {
@@ -552,16 +581,16 @@ impl JsonData {
             lightcones: vec![],
             relics: vec![],
             avatars: BTreeMap::<u32, AvatarJson>::new(),
-            lineups: BTreeMap::<u32, u32>::new(),
+            lineups: BTreeMap::<u32, u32>::from([(0, 8006), (1, 0), (2, 0),(3, 0)]),
             scene: Default::default(),
             position: Default::default(),
             battle_config: Default::default(),
             main_character: Default::default(),
         };
         db.avatars.insert(
-            8004,
+            8006,
             AvatarJson {
-                avatar_id: 8004,
+                avatar_id: 8006,
                 level: 80,
                 promotion: 6,
                 sp_max: Some(10_000),
@@ -571,17 +600,17 @@ impl JsonData {
                 data: AvatarData {
                     rank: 6,
                     skills: BTreeMap::from([
-                        (800401, 6),
-                        (800402, 10),
-                        (800403, 10),
-                        (800404, 10),
-                        (800405, 1),
+                        (800601, 6),
+                        (800602, 10),
+                        (800603, 10),
+                        (800604, 10),
+                        (800605, 1),
                     ]),
                 },
             },
         );
 
-        db.lineups.insert(0, 8004);
+        db.lineups.insert(0, 8006);
 
         db.save().await;
 
