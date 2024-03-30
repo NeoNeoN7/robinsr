@@ -1,3 +1,9 @@
+# Run the game by clicking run.bat file
+
+Tool website: [https://freesr-tools.pages.dev](https://freesr-tools.pages.dev)
+
+Start battle by entering any calyx in the map, DON'T ATTACK THE ENEMIES, IT WON'T WORK
+
 # RobinSR
 Original: [https://git.xeondev.com/reversedrooms/RobinSR/](https://git.xeondev.com/reversedrooms/RobinSR/)
 
