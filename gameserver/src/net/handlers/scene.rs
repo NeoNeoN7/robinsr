@@ -1,6 +1,5 @@
 use lazy_static::lazy_static;
 use prost::Message;
-use rand::Rng;
 use tokio::sync::Mutex;
 
 use crate::{
@@ -275,26 +274,21 @@ async fn load_scene(
             }),
         };
 
-        let mut entities = 0;
+        let mut entity_id = 10;
 
         // LOAD PROPS
         for prop in level.props {
-            if entities >= 500 {
-                continue;
-            }
-            entities += 1;
-
-            let mut rng = rand::thread_rng();
+            entity_id += 1;
 
             let prop_state = if prop.anchor_id.unwrap_or_default() > 0 {
                 8
             } else {
-                prop.prop_state_list.first().unwrap().clone() as u32
+               prop.state as u32
             };
             let info = SceneEntityInfo {
                 inst_id: prop.id as u32,
                 group_id: prop.group_id,
-                entity_id: rng.gen(),
+                entity_id,
                 motion: Some(MotionInfo {
                     // pos
                     aomilajjmii: Some(Vector {
@@ -336,17 +330,12 @@ async fn load_scene(
 
         // LOAD MONSTERS
         for monster in level.monsters {
-            if entities >= 500 {
-                continue;
-            }
-            entities += 1;
-
-            let mut rng = rand::thread_rng();
+            entity_id += 1;
 
             let info = SceneEntityInfo {
                 inst_id: monster.id as u32,
                 group_id: monster.group_id,
-                entity_id: rng.gen(),
+                entity_id,
                 motion: Some(MotionInfo {
                     // pos
                     aomilajjmii: Some(Vector {

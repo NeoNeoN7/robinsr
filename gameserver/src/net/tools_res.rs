@@ -62,11 +62,21 @@ pub struct LevelProp {
     pub anchor_group_id: Option<u32>,
     #[serde(rename = "MappingInfoID")]
     pub mapping_info_id: Option<u32>,
+    
+    #[serde(default)]
+    #[serde(rename = "State")]
+    pub state: PropState,
 
     #[serde(default)]
     pub prop_state_list: Vec<PropState>,
     #[serde(default)]
     pub group_id: u32,
+    #[serde(rename = "IsDelete")]
+    #[serde(default)]
+    pub is_delete: bool,
+    #[serde(rename = "IsClientOnly")]
+    #[serde(default)]
+    pub client_only: bool,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -248,6 +258,12 @@ pub enum PropState {
     CustomState07 = 107,
     CustomState08 = 108,
     CustomState09 = 109,
+}
+
+impl Default for PropState {
+    fn default() -> Self {
+        PropState::Closed
+    }
 }
 
 pub type IntMap<T> = HashMap<u32, T>;
