@@ -1,0 +1,40 @@
+{
+	"OSBETAWin2.1.51": {
+		"asset_bundle_url": "https://autopatchcn.bhsr.com/asb/BetaLive/output_6744505_89b2f5dc973e",
+		"ex_resource_url": "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6759713_b4e0e740f0da",
+		"lua_url": "https://autopatchcn.bhsr.com/lua/BetaLive/output_6755976_3c46d7c46e2c",
+		"lua_version": "6755976"
+	},
+	"CNBETAWin2.1.51": {
+		"asset_bundle_url": "https://autopatchcn.bhsr.com/asb/BetaLive/output_6744505_89b2f5dc973e",
+		"ex_resource_url": "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6759713_b4e0e740f0da",
+		"lua_url": "https://autopatchcn.bhsr.com/lua/BetaLive/output_6755976_3c46d7c46e2c",
+		"lua_version": "6755976"
+	},
+	
+	"OSBETAWin2.1.52": {
+		"asset_bundle_url": "https://autopatchcn.bhsr.com/asb/BetaLive/output_6785106_15237df2ef89",
+		"ex_resource_url": "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6787319_5f3f1dae4769",
+		"lua_url": "https://autopatchcn.bhsr.com/lua/BetaLive/output_6785460_26c4b6c61a8b",
+		"lua_version": "6785460"
+	},
+	"CNBETAWin2.1.52": {
+		"asset_bundle_url": "https://autopatchcn.bhsr.com/asb/BetaLive/output_6785106_15237df2ef89",
+		"ex_resource_url": "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6787319_5f3f1dae4769",
+		"lua_url": "https://autopatchcn.bhsr.com/lua/BetaLive/output_6785460_26c4b6c61a8b",
+		"lua_version": "6785460"
+	},
+	
+	"OSBETAWin2.1.53": {
+		"asset_bundle_url": "https://autopatchcn.bhsr.com/asb/BetaLive/output_6828321_72f2df86102b",
+		"ex_resource_url": "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6834225_44836493b261",
+		"lua_url": "https://autopatchcn.bhsr.com/lua/BetaLive/output_6828764_f749b48347fd",
+		"lua_version": "6828764"
+	},
+	"CNBETAWin2.1.53": {
+		"asset_bundle_url": "https://autopatchcn.bhsr.com/asb/BetaLive/output_6828321_72f2df86102b",
+		"ex_resource_url": "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6834225_44836493b261",
+		"lua_url": "https://autopatchcn.bhsr.com/lua/BetaLive/output_6828764_f749b48347fd",
+		"lua_version": "6828764"
+	}
+}

@@ -5,6 +5,7 @@ use logging::init_tracing;
 use services::{auth, dispatch, errors};
 use tracing::Level;
 
+mod config;
 mod logging;
 mod services;
 
