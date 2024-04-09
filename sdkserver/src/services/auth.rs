@@ -1,7 +1,7 @@
 use axum::Json;
 use serde_json::json;
 
-pub const LOGIN_WITH_PASSWORD_ENDPOINT: &str = "/:product_name/mdk/shield/api/login/";
+pub const LOGIN_WITH_PASSWORD_ENDPOINT: &str = "/:product_name/mdk/shield/api/login";
 pub const LOGIN_WITH_SESSION_TOKEN_ENDPOINT: &str = "/:product_name/mdk/shield/api/verify";
 pub const GRANTER_LOGIN_VERIFICATION_ENDPOINT: &str = "/:product_name/combo/granter/login/v2/login";
 pub const RISKY_API_CHECK_ENDPOINT: &str = "/account/risky/api/check";

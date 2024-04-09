@@ -1,7 +1,7 @@
-use std::collections::HashMap;
 use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use std::collections::HashMap;
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -200,7 +200,6 @@ impl Default for PlaneType {
     }
 }
 
-
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MazeProp {
@@ -254,14 +253,13 @@ pub enum PropState {
 pub type IntMap<T> = HashMap<u32, T>;
 pub type StringMap<T> = HashMap<String, T>;
 
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct SimpleLevelGroup {
     pub teleports: IntMap<LevelProp>,
     pub props: Vec<LevelProp>,
     pub npcs: Vec<LevelNPC>,
     pub monsters: Vec<LevelMonster>,
-    // pub level_group: IntMap<LevelGroup>,
+    pub group_ids: Vec<u32>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -275,14 +273,14 @@ pub struct GameResources {
 
 impl GameResources {
     pub fn new() -> Self {
-        let str = std::fs::read_to_string("./resources.json").unwrap();
-        let res: Self = serde_json::from_str(&str).unwrap();
+        let str = std::fs::read_to_string("./resources.json")
+            .expect("resources.json is broken, pls redownload");
+        let res: Self =
+            serde_json::from_str(&str).expect("resources.json is broken, pls redownload");
         res
     }
 }
 
 lazy_static! {
-    pub static ref GAME_RESOURCES: GameResources = {
-        GameResources::new()
-    };
+    pub static ref GAME_RESOURCES: GameResources = GameResources::new();
 }

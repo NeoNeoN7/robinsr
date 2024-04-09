@@ -1,7 +1,7 @@
+use proto::*;
 use proto::{Avatar, AvatarSkillTree, BattleAvatar};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
-use proto::*;
 
 use super::tools_res::{MapEntrance, MazePlane, SimpleLevelGroup, GAME_RESOURCES};
 
@@ -33,11 +33,7 @@ pub struct AvatarData {
 
 #[allow(dead_code)]
 impl AvatarJson {
-    pub fn to_avatar_proto(
-        &self,
-        lightcone: Option<&Lightcone>,
-        relics: Vec<&Relic>,
-    ) -> Avatar {
+    pub fn to_avatar_proto(&self, lightcone: Option<&Lightcone>, relics: Vec<&Relic>) -> Avatar {
         Avatar {
             base_avatar_id: self.avatar_id,
             exp: 0,
@@ -134,16 +130,20 @@ impl AvatarJson {
         }
     }
 
-    pub fn to_lineup_avatars(
-        player: &JsonData,
-    ) -> Vec<LineupAvatar> {
-        let avatar_ids = player.avatars.iter().map(|(_, v)| &v.avatar_id).collect::<Vec<_>>();
+    pub fn to_lineup_avatars(player: &JsonData) -> Vec<LineupAvatar> {
+        let avatar_ids = player
+            .avatars
+            .iter()
+            .map(|(_, v)| &v.avatar_id)
+            .collect::<Vec<_>>();
 
-        player.lineups
+        player
+            .lineups
             .iter()
             .filter(|(_slot, v)| v > &&0 && avatar_ids.contains(v))
             .map(|(slot, avatar_id)| {
-                player.avatars
+                player
+                    .avatars
                     .get(avatar_id)
                     .unwrap()
                     .to_lineup_avatar_proto(*slot)
@@ -181,7 +181,6 @@ impl AvatarJson {
         lineup_info
     }
 }
-
 
 // LIGHTCONE
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -222,7 +221,6 @@ impl Lightcone {
         }
     }
 }
-
 
 // RELIC
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -270,7 +268,7 @@ impl Relic {
                     step: v.step,
                 })
                 .collect::<Vec<_>>(),
-           ..Default::default()
+            ..Default::default()
         }
     }
 
@@ -289,7 +287,7 @@ impl Relic {
                     step: v.step,
                 })
                 .collect::<Vec<_>>(),
-                ..Default::default()
+            ..Default::default()
         }
     }
 
@@ -300,7 +298,6 @@ impl Relic {
         }
     }
 }
-
 
 // MONSTER
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
@@ -330,8 +327,9 @@ impl Monster {
 
         SceneMonsterWave {
             iilhbcalikm: wave_index, // wave indexx??
-            
-            ejahmdkklbn: Some(Holldlkceof { // monster param
+
+            ejahmdkklbn: Some(Holldlkceof {
+                // monster param
                 level: monsters.iter().map(|v| v.level).max().unwrap_or(95),
                 ..Default::default()
             }),
@@ -352,7 +350,6 @@ impl Monster {
             .collect::<_>()
     }
 }
-
 
 // BATTLE CONFIG
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -430,7 +427,7 @@ impl BattleBuffJson {
     }
 }
 
-// SCENE 
+// SCENE
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Scene {
     pub plane_id: u32,
@@ -449,7 +446,6 @@ impl Default for Scene {
 }
 
 // Position
-
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Position {
     pub x: i32,
@@ -480,7 +476,6 @@ impl Position {
         }
     }
 }
-
 
 // FREESR-DATA.json
 #[derive(Debug, Serialize, Deserialize)]
@@ -522,14 +517,13 @@ impl Default for JsonData2 {
         lineups.insert(3, 0);
 
         Self {
-            lineups ,
+            lineups,
             position: Default::default(),
             main_character: Default::default(),
-            scene: Default::default()
+            scene: Default::default(),
         }
     }
 }
-
 
 #[derive(Serialize, Deserialize, Clone, Debug, Copy)]
 pub enum MainCharacter {
@@ -544,13 +538,13 @@ pub enum MainCharacter {
 impl MainCharacter {
     // pub fn to_vec() -> Vec<MainCharacter> {
     //     return vec![
-    //         MainCharacter::MalePyhsical, 
-    //         MainCharacter::FemalePhysical, 
-            
-    //         MainCharacter::MalePreservation, 
-    //         MainCharacter::FemalePreservation, 
-            
-    //         MainCharacter::MaleHarmony, 
+    //         MainCharacter::MalePyhsical,
+    //         MainCharacter::FemalePhysical,
+
+    //         MainCharacter::MalePreservation,
+    //         MainCharacter::FemalePreservation,
+
+    //         MainCharacter::MaleHarmony,
     //         MainCharacter::FemaleHarmony
     //     ]
     // }
@@ -583,16 +577,19 @@ impl Default for MainCharacter {
 
 impl JsonData {
     pub async fn load() -> Self {
+        let mut json: JsonData = tokio::fs::read_to_string("freesr-data.json")
+            .await
+            .map(|v| serde_json::from_str(&v))
+            .expect("freesr-data.json is broken, pls redownload")
+            .expect("freesr-data.json is broken, pls redownload");
 
-        let mut json: JsonData = match serde_json::from_str(&tokio::fs::read_to_string("freesr-data.json").await.unwrap_or_default()) {
-            Ok(db) => db,
-            Err(err) => {
-                println!("{:#?}", err);
-                Self::create_dummy().await
-            }
-        };
+        let json2: JsonData2 = serde_json::from_str(
+            &tokio::fs::read_to_string("persistent")
+                .await
+                .unwrap_or_default(),
+        )
+        .unwrap_or_default();
 
-        let json2: JsonData2 = serde_json::from_str(&tokio::fs::read_to_string("persistent").await.unwrap_or_default()).unwrap_or_default();
         json.lineups = json2.lineups;
         json.position = json2.position;
         json.scene = json2.scene;
@@ -605,54 +602,13 @@ impl JsonData {
 
     async fn verify_lineup(&mut self) {
         if self.lineups.len() == 0 {
-            self.lineups = BTreeMap::<u32, u32>::from([(0, 8006), (1, 0), (2, 0),(3, 0)])
+            self.lineups = BTreeMap::<u32, u32>::from([(0, 8006), (1, 0), (2, 0), (3, 0)])
         } else if self.lineups.len() < 4 {
             for i in self.lineups.len()..4 {
                 self.lineups.insert(i as u32, 0);
             }
         }
         self.save().await;
-    }
-
-    async fn create_dummy() -> Self {
-        let mut db = Self {
-            lightcones: vec![],
-            relics: vec![],
-            avatars: BTreeMap::<u32, AvatarJson>::new(),
-            lineups: BTreeMap::<u32, u32>::from([(0, 8006), (1, 0), (2, 0),(3, 0)]),
-            scene: Default::default(),
-            position: Default::default(),
-            battle_config: Default::default(),
-            main_character: Default::default(),
-        };
-        db.avatars.insert(
-            8006,
-            AvatarJson {
-                avatar_id: 8006,
-                level: 80,
-                promotion: 6,
-                sp_max: Some(10_000),
-                sp_value: Some(10_000),
-                owner_uid: 0,
-                techniques: vec![],
-                data: AvatarData {
-                    rank: 6,
-                    skills: BTreeMap::from([
-                        (800601, 6),
-                        (800602, 10),
-                        (800603, 10),
-                        (800604, 10),
-                        (800605, 1),
-                    ]),
-                },
-            },
-        );
-
-        db.lineups.insert(0, 8006);
-
-        db.save().await;
-
-        db
     }
 
     pub async fn save_lineup(&self) {
@@ -662,14 +618,20 @@ impl JsonData {
     pub async fn save(&self) {
         let json = serde_json::to_string_pretty(&self).unwrap();
         let _ = tokio::fs::write("freesr-data.json", json.as_bytes()).await;
-        let _ = tokio::fs::write("persistent", serde_json::to_string_pretty(&JsonData2 {
-            lineups: self.lineups.clone(),
-            main_character: self.main_character,
-            position: self.position.clone(),
-            scene: self.scene.clone()
-        }).unwrap().as_bytes()).await;
+        let _ = tokio::fs::write(
+            "persistent",
+            serde_json::to_string_pretty(&JsonData2 {
+                lineups: self.lineups.clone(),
+                main_character: self.main_character,
+                position: self.position.clone(),
+                scene: self.scene.clone(),
+            })
+            .unwrap()
+            .as_bytes(),
+        )
+        .await;
     }
-    
+
     pub async fn get_level_group(
         &self,
         entry_id: u32,
@@ -683,7 +645,6 @@ impl JsonData {
                 .level_group
                 .get(&format!("P{}_F{}", enterance.plane_id, enterance.floor_id))
             {
-                // TODO: use reference somehow, not cloning
                 return Some((level.clone(), enterance.clone(), plane.cloned()));
             };
         }

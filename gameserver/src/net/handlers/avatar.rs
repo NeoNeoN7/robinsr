@@ -1,3 +1,5 @@
+use crate::net::tools::{JsonData, Lightcone};
+
 use super::*;
 
 static UNLOCKED_AVATARS: [u32; 54] = [
@@ -11,6 +13,7 @@ pub async fn on_get_avatar_data_cs_req(
     session: &mut PlayerSession,
     body: &GetAvatarDataCsReq,
 ) -> Result<()> {
+    let json = JsonData::load().await;
     session
         .send(
             CMD_GET_AVATAR_DATA_SC_RSP,
@@ -19,13 +22,13 @@ pub async fn on_get_avatar_data_cs_req(
                 is_all: body.is_get_all,
                 avatar_list: UNLOCKED_AVATARS
                     .iter()
-                    .map(|id| Avatar {
+                    .map(|id| json.avatars.get(id).map(|v|v.to_avatar_proto(Option::<&Lightcone>::None, vec![])).unwrap_or(Avatar {
                         base_avatar_id: *id,
                         level: 80,
                         promotion: 6,
                         rank: 6,
                         ..Default::default()
-                    })
+                    }))
                     .collect(),
                 ..Default::default()
             },

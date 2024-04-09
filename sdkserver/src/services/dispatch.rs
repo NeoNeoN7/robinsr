@@ -31,13 +31,13 @@ pub async fn query_gateway() -> String {
         ip: String::from("127.0.0.1"),
         port: 23301,
         asset_bundle_url: String::from(
-            "https://autopatchcn.bhsr.com/asb/BetaLive/output_6744505_89b2f5dc973e",
+            "https://autopatchcn.bhsr.com/asb/BetaLive/output_6828321_72f2df86102b",
         ),
         lua_url: String::from(
-            "https://autopatchcn.bhsr.com/lua/BetaLive/output_6755976_3c46d7c46e2c",
+            "https://autopatchcn.bhsr.com/lua/BetaLive/output_6828764_f749b48347fd",
         ),
         ex_resource_url: String::from(
-            "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6759713_b4e0e740f0da",
+            "https://autopatchcn.bhsr.com/design_data/BetaLive/output_6834225_44836493b261",
         ),
         ifix_version: String::from("0"),
         lua_version: String::from("6755976"),

@@ -33,7 +33,8 @@ pub async fn on_player_login_cs_req(
                 stamina: 240,
                 basic_info: Some(PlayerBasicInfo {
                     nickname: String::from("xeondev"),
-                    level: 5,
+                    level: 70,
+                    world_level: 6,
                     stamina: 240,
                     ..Default::default()
                 }),

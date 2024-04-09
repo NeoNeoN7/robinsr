@@ -1196,7 +1196,7 @@ trait_handler! {
     // ScenePlaneEventScNotify 1484;
     // LastSpringRefreshTimeNotify 1439;
     // UpdateFloorSavedValueNotify 1420;
-    // GetEnteredSceneCsReq 1427;
+    GetEnteredSceneCsReq 1427; // getenteredscenecsreq
     // StartTimedCocoonStageCsReq 1426;
     // RecoverAllLineupCsReq 1424;
     // StartTimedFarmElementCsReq 1436;
@@ -1205,7 +1205,7 @@ trait_handler! {
     // UnlockedAreaMapScNotify 1457;
     // StartTimedCocoonStageScRsp 1423;
     // ActivateFarmElementScRsp 1455;
-    // GetUnlockTeleportCsReq 1440;
+    Kkbapmgmmcb 1440; //getunlockteleportcsreq
     // DeactivateFarmElementCsReq 1490;
     // RefreshTriggerByClientCsReq 1432;
     // SetGroupCustomSaveDataCsReq 1449;
@@ -1239,7 +1239,7 @@ trait_handler! {
     // GroupStateChangeScRsp 1421;
     // SpringRecoverCsReq 1444;
     // SetCurInteractEntityScRsp 1497;
-    // SceneCastSkillCsReq 1402;
+    Mpemgbdkigg 1402; // scenecastskillcsreq
     StartCocoonStageCsReq 1408;
     Fkjoeabiioe 1470; //getscenemapinfocsreq
     // SceneEntityMoveScRsp 1448;

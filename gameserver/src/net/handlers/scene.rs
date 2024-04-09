@@ -3,14 +3,18 @@ use prost::Message;
 use rand::Rng;
 use tokio::sync::Mutex;
 
-use crate::{net::{tools::{AvatarJson, JsonData}, tools_res::PropState}, util};
+use crate::{
+    net::{
+        tools::{ AvatarJson, JsonData},
+        tools_res::{PropState, GAME_RESOURCES},
+    },
+    util,
+};
 
 use super::*;
 
 #[derive(Message)]
-struct Dummy {
-
-}
+pub struct Dummy {}
 
 pub async fn on_get_cur_scene_info_cs_req(
     session: &mut PlayerSession,
@@ -63,8 +67,14 @@ pub async fn on_lckgkdehclb(session: &mut PlayerSession, request: &Lckgkdehclb) 
         .send(CMD_ENTER_SCENE_SC_RSP, Dummy::default())
         .await?;
 
-    let _ = load_scene(session, &mut player, request.entry_id, true, Some(request.maplanefddc)).await;
-
+    let _ = load_scene(
+        session,
+        &mut player,
+        request.entry_id,
+        true,
+        Some(request.maplanefddc),
+    )
+    .await;
 
     Ok(())
 }
@@ -101,10 +111,7 @@ pub async fn on_fkjoeabiioe(sesison: &mut PlayerSession, request: &Fkjoeabiioe) 
         ..Default::default()
     };
 
-    if let Some((level, enterance, _)) = player
-        .get_level_group(request.dmkkkfnkofh[0])
-        .await
-    {
+    if let Some((level, enterance, _)) = player.get_level_group(request.dmkkkfnkofh[0]).await {
         // add teleports
         for teleport in &level.teleports {
             map_info.ojlnmnehgai.push(*teleport.0)
@@ -133,15 +140,16 @@ pub async fn on_fkjoeabiioe(sesison: &mut PlayerSession, request: &Fkjoeabiioe) 
 
         map_info.entry_id = enterance.id;
     }
-    sesison.send(
-        CMD_GET_SCENE_MAP_INFO_SC_RSP,
-        Cegeebldbke {
-            retcode: 0,
-            mhefdgcamjl: vec![map_info],
-            ..Default::default()
-        },
-    )
-    .await?;
+    sesison
+        .send(
+            CMD_GET_SCENE_MAP_INFO_SC_RSP,
+            Cegeebldbke {
+                retcode: 0,
+                mhefdgcamjl: vec![map_info],
+                ..Default::default()
+            },
+        )
+        .await?;
 
     Ok(())
 }
@@ -150,21 +158,24 @@ lazy_static! {
     static ref NEXT_SCENE_SAVE: Mutex<u64> = Mutex::new(0);
 }
 
-pub async fn on_scene_entity_move_cs_req(session: &mut PlayerSession, request: &SceneEntityMoveCsReq) -> Result<()> {
+pub async fn on_scene_entity_move_cs_req(
+    session: &mut PlayerSession,
+    request: &SceneEntityMoveCsReq,
+) -> Result<()> {
     let mut player = JsonData::load().await;
     let mut timestamp = NEXT_SCENE_SAVE.lock().await;
 
     if util::cur_timestamp_ms() <= *timestamp {
         session
-        .send(CMD_SCENE_ENTITY_MOVE_SC_RSP, Dummy::default())
-        .await?;
+            .send(CMD_SCENE_ENTITY_MOVE_SC_RSP, Dummy::default())
+            .await?;
 
         return Ok(());
     }
-    
-    // save every 5 minute
+
+    // save every 5 sec
     *timestamp = util::cur_timestamp_ms() + (5 * 1000);
-    
+
     for entity in &request.entity_motion_list {
         if entity.entity_id != 0 {
             continue;
@@ -190,6 +201,33 @@ pub async fn on_scene_entity_move_cs_req(session: &mut PlayerSession, request: &
     Ok(())
 }
 
+pub type GetEnteredSceneCsReq = Dummy;
+pub async fn on_get_entered_scene_cs_req(session: &mut PlayerSession, _: &GetEnteredSceneCsReq) -> Result<()> {
+    let scenes = GAME_RESOURCES
+        .map_entrance
+        .iter()
+        .filter(|(_, v)| {
+            v.finish_main_mission_list.len() > 0 || v.finish_sub_mission_list.len() > 0
+        })
+        .map(|(_, v)| Lpllljogfeh {
+            floor_id: v.floor_id,
+            plane_id: v.plane_id,
+        })
+        .collect::<Vec<_>>();
+
+    session.send(CMD_GET_ENTERED_SCENE_SC_RSP, Mkgidalegbd { 
+        lejonbbgdnn: scenes,
+        retcode: 0
+     }).await?;
+    Ok(())
+}
+
+// getunlockteleportcsreq
+pub async fn on_kkbapmgmmcb(_session: &mut PlayerSession, _request: &Kkbapmgmmcb) -> Result<()> {
+    Ok(())
+}
+
+
 async fn load_scene(
     session: &mut PlayerSession,
     json: &mut JsonData,
@@ -197,7 +235,7 @@ async fn load_scene(
     _save: bool,
     teleport_id: Option<u32>,
 ) -> Result<SceneInfo> {
-    if let Some((level, enterance, plane)) = json.get_level_group( entry_id).await {
+    if let Some((level, enterance, plane)) = json.get_level_group(entry_id).await {
         let mut position = json.position.clone();
         if let Some(teleport_id) = teleport_id {
             if let Some(teleport) = level.teleports.get(&teleport_id) {
@@ -217,7 +255,7 @@ async fn load_scene(
                 .map(|v| v.plane_type)
                 .unwrap_or(enterance.entrance_type) as u32,
 
-            // world_id: plane.map(|v| v.world_id).unwrap_or_default(),
+            pbfgagecpcd: plane.map(|v| v.world_id).unwrap_or_default(),
             ..Default::default()
         };
 
@@ -225,7 +263,7 @@ async fn load_scene(
         let player_pos = MotionInfo {
             // rot
             eiaoiankefd: Some(Vector {
-                baimdminomk:0,
+                baimdminomk: 0,
                 bemlopmcgch: position.rot_y,
                 bagloppgnpb: 0,
             }),
@@ -279,10 +317,6 @@ async fn load_scene(
                 ..Default::default()
             };
 
-            // only add check
-            // if prop_state == 8 {
-            //     group_info.entity_list.push(info);
-            // }
             if let Some(group) = scene_info
                 .chhmmbdhjpg
                 .iter_mut()
@@ -352,7 +386,42 @@ async fn load_scene(
                 scene_info.chhmmbdhjpg.push(group_info);
             }
         }
-
+        
+        // load player entity
+        let mut player_group = Dhkacjhaoid {
+            state: 0,
+            group_id: 0,
+            ..Default::default()
+        };
+        for (slot, avatar_id) in &json.lineups {
+            player_group.entity_list.push(SceneEntityInfo {
+                inst_id: 0,
+                entity_id: (*slot) + 1,
+                motion: Some(MotionInfo {
+                    // pos
+                    aomilajjmii: Some(Vector {
+                        baimdminomk: json.position.x ,
+                        bemlopmcgch: json.position.y ,
+                        bagloppgnpb: json.position.z ,
+                    }),
+                    // rot
+                    eiaoiankefd: Some(Vector {
+                        baimdminomk: 0,
+                        bemlopmcgch: json.position.rot_y,
+                        bagloppgnpb: 0,
+                    }),
+                }),
+                actor: Some(SceneActorInfo {
+                    avatar_type: AvatarType::AvatarFormalType.into(),
+                    base_avatar_id: *avatar_id,
+                    map_layer: 0,
+                    uid: 0
+                }),
+                ..Default::default()
+            })
+        }
+        scene_info.chhmmbdhjpg.push(player_group);
+        
         if _save {
             session
                 .send(
