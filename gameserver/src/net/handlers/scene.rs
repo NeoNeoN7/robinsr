@@ -4,7 +4,7 @@ use tokio::sync::Mutex;
 
 use crate::{
     net::{
-        tools::{ AvatarJson, JsonData},
+        tools::{AvatarJson, JsonData},
         tools_res::{PropState, GAME_RESOURCES},
     },
     util,
@@ -131,7 +131,7 @@ pub async fn on_fkjoeabiioe(sesison: &mut PlayerSession, request: &Fkjoeabiioe) 
                 state: if prop.prop_state_list.contains(&PropState::CheckPointEnable) {
                     PropState::CheckPointEnable as u32
                 } else {
-                    (prop.prop_state_list.first().unwrap_or(&PropState::Closed)).clone() as u32
+                    prop.state.clone() as u32
                 },
                 ifjocipnpgd: prop.id as u32,
             });
@@ -201,7 +201,10 @@ pub async fn on_scene_entity_move_cs_req(
 }
 
 pub type GetEnteredSceneCsReq = Dummy;
-pub async fn on_get_entered_scene_cs_req(session: &mut PlayerSession, _: &GetEnteredSceneCsReq) -> Result<()> {
+pub async fn on_get_entered_scene_cs_req(
+    session: &mut PlayerSession,
+    _: &GetEnteredSceneCsReq,
+) -> Result<()> {
     let scenes = GAME_RESOURCES
         .map_entrance
         .iter()
@@ -214,10 +217,15 @@ pub async fn on_get_entered_scene_cs_req(session: &mut PlayerSession, _: &GetEnt
         })
         .collect::<Vec<_>>();
 
-    session.send(CMD_GET_ENTERED_SCENE_SC_RSP, Mkgidalegbd { 
-        lejonbbgdnn: scenes,
-        retcode: 0
-     }).await?;
+    session
+        .send(
+            CMD_GET_ENTERED_SCENE_SC_RSP,
+            Mkgidalegbd {
+                lejonbbgdnn: scenes,
+                retcode: 0,
+            },
+        )
+        .await?;
     Ok(())
 }
 
@@ -225,7 +233,6 @@ pub async fn on_get_entered_scene_cs_req(session: &mut PlayerSession, _: &GetEnt
 pub async fn on_kkbapmgmmcb(_session: &mut PlayerSession, _request: &Kkbapmgmmcb) -> Result<()> {
     Ok(())
 }
-
 
 async fn load_scene(
     session: &mut PlayerSession,
@@ -283,7 +290,8 @@ async fn load_scene(
             let prop_state = if prop.anchor_id.unwrap_or_default() > 0 {
                 8
             } else {
-               prop.state as u32
+                continue; // skip non anchor prop
+                // prop.state as u32
             };
             let info = SceneEntityInfo {
                 inst_id: prop.id as u32,
@@ -375,7 +383,7 @@ async fn load_scene(
                 scene_info.chhmmbdhjpg.push(group_info);
             }
         }
-        
+
         // load player entity
         let mut player_group = Dhkacjhaoid {
             state: 0,
@@ -389,9 +397,9 @@ async fn load_scene(
                 motion: Some(MotionInfo {
                     // pos
                     aomilajjmii: Some(Vector {
-                        baimdminomk: json.position.x ,
-                        bemlopmcgch: json.position.y ,
-                        bagloppgnpb: json.position.z ,
+                        baimdminomk: json.position.x,
+                        bemlopmcgch: json.position.y,
+                        bagloppgnpb: json.position.z,
                     }),
                     // rot
                     eiaoiankefd: Some(Vector {
@@ -404,13 +412,13 @@ async fn load_scene(
                     avatar_type: AvatarType::AvatarFormalType.into(),
                     base_avatar_id: *avatar_id,
                     map_layer: 0,
-                    uid: 0
+                    uid: 0,
                 }),
                 ..Default::default()
             })
         }
         scene_info.chhmmbdhjpg.push(player_group);
-        
+
         if _save {
             session
                 .send(
