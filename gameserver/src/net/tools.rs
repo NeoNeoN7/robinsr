@@ -1,9 +1,8 @@
 use proto::*;
-use proto::{Avatar, AvatarSkillTree, BattleAvatar};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
-use super::tools_res::{MapEntrance, MazePlane, SimpleLevelGroup, GAME_RESOURCES};
+use super::tools_res::{MapEntrance, MazePlane, SimpleLevelGroup, GAME_RESOURCES, RELIC_TYPE};
 
 // AVATAR
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -50,10 +49,12 @@ impl AvatarJson {
                 })
                 .collect::<Vec<_>>(),
             equipment_unique_id: if let Some(lc) = lightcone {
-                lc.internal_uid
+                // ?
+                2000 + lc.internal_uid
             } else {
                 0
             },
+            ojneijnggfo: 1712924677,
             amafpakcckf: relics
                 .iter()
                 .map(|v| v.to_equipment_relic_proto())
@@ -201,13 +202,15 @@ impl Lightcone {
     pub fn to_equipment_proto(&self) -> Equipment {
         Equipment {
             base_avatar_id: self.equip_avatar,
+            imhlbinfhlh: self.equip_avatar,
             exp: 0,
             is_protected: false,
             level: self.level,
             promotion: self.promotion,
             rank: self.rank,
             tid: self.item_id,
-            unique_id: self.internal_uid,
+            // ?
+            unique_id: 2000 + self.internal_uid,
             ..Default::default()
         }
     }
@@ -253,12 +256,14 @@ impl Relic {
     pub fn to_relic_proto(&self) -> proto::Relic {
         proto::Relic {
             base_avatar_id: self.equip_avatar,
+            imhlbinfhlh: self.equip_avatar,
             exp: 0,
             is_protected: false,
             level: self.level,
             main_affix_id: self.main_affix_id,
             tid: self.relic_id,
-            unique_id: self.internal_uid,
+            // ?
+            unique_id: 1 + self.internal_uid,
             sub_affix_list: self
                 .sub_affixes
                 .iter()
@@ -293,8 +298,9 @@ impl Relic {
 
     pub fn to_equipment_relic_proto(&self) -> EquipRelic {
         EquipRelic {
-            ipnhjoomhdm: 0, //slot
-            llepdadmfdo: self.internal_uid,
+            ipnhjoomhdm: *RELIC_TYPE.get(&self.relic_id).unwrap_or(&0),
+            // ?
+            llepdadmfdo: 1 + self.internal_uid,
         }
     }
 }

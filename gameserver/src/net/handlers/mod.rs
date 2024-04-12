@@ -6,6 +6,7 @@ mod mission;
 mod player;
 mod scene;
 mod tutorial;
+mod inventory;
 
 use anyhow::Result;
 use paste::paste;
@@ -23,10 +24,11 @@ pub use mission::*;
 pub use player::*;
 pub use scene::*;
 pub use tutorial::*;
+pub use inventory::*;
 
 use proto::{
     Aaihejacdpk::*, Achkcddkkkj::*, Bancodieeof::*, CmdActivityType::*, CmdBattleType::*,
-    CmdItemType::*, CmdPlayerType::*, Cmpepmnekko::*, Cpbdjpocnai::*, Ddhbjcelmjp::*,
+    CmdPlayerType::*, Cmpepmnekko::*, Cpbdjpocnai::*, Ddhbjcelmjp::*,
     Eegmjpcijbc::*, Emhbkpkpjpa::*, Fdkapmfjgjl::*, Gaifgoihffa::*, Galijhmhgcg::*, Gdjpnkniijf::*,
     Hfjpennlffa::*, Hmnbojnkleh::*, Ieoildlcdkb::*, Kfmpmaojchm::*, Lopidcokdih::*, Lpegmiilfjm::*,
     Mbnnmfkffbo::*, Mkeclbphcol::*, Niinikapdpg::*, Pfokmnnfiap::*, Pjmghcfmmge::*, Pnjfenbhbhg::*,
@@ -89,7 +91,7 @@ dummy! {
     GetShareData,
     GetTreasureDungeonActivityData,
     PlayerReturnInfoQuery,
-    GetBag,
+    // GetBag,
     GetPlayerBoardData,
     GetActivityScheduleConfig,
     GetMissionData,

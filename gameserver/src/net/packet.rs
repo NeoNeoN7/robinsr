@@ -194,12 +194,12 @@ trait_handler! {
     // TakePrestigeRewardScRsp 4768;
     // GetUpdatedArchiveDataScRsp 2388;
     // GetArchiveDataScRsp 2348;
-    // GetArchiveDataCsReq 2334;
+    GetArchiveDataCsReq 2334;
     // GetUpdatedArchiveDataCsReq 2362;
     // UnlockSkilltreeScRsp 309;
-    // DressRelicAvatarCsReq 359;
+    Oakankcfbec 359;// DressRelicAvatarCsReq 359;
     // TakeOffRelicScRsp 337;
-    // DressAvatarCsReq 386;
+    Copkgioejac 386; // DressAvatarCsReq 386;
     // MarkAvatarScRsp 328;
     // TakePromotionRewardScRsp 316;
     // RankUpAvatarCsReq 306;
@@ -211,7 +211,7 @@ trait_handler! {
     // TakePromotionRewardCsReq 339;
     // DressAvatarScRsp 329;
     // TakeOffAvatarSkinScRsp 363;
-    // TakeOffRelicCsReq 342;
+    Cnpajjnhfpa 342;// TakeOffRelicCsReq 342;
     // TakeOffEquipmentScRsp 368;
     // AvatarExpUpCsReq 362;
     // DressAvatarSkinScRsp 385;
@@ -219,7 +219,7 @@ trait_handler! {
     // PromoteAvatarCsReq 319;
     // RankUpAvatarScRsp 333;
     // GetAvatarDataScRsp 348;
-    // TakeOffEquipmentCsReq 345;
+    Aafgmacgenl 345;// TakeOffEquipmentCsReq 345;
     // DressRelicAvatarScRsp 395;
     // PromoteAvatarScRsp 343;
     // AddAvatarScNotify 396;
@@ -624,7 +624,7 @@ trait_handler! {
     // DestroyItemScRsp 597;
     // GeneralVirtualItemDataNotify 565;
     // ExpUpEquipmentScRsp 568;
-    // GetBagCsReq 534;
+    GetBagCsReq 534;
     // RankUpEquipmentCsReq 586;
     // DiscardRelicCsReq 589;
     // RelicRecommendScRsp 592;
