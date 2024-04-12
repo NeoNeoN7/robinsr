@@ -2,7 +2,7 @@ use proto::*;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
-use super::tools_res::{MapEntrance, MazePlane, SimpleLevelGroup, GAME_RESOURCES, RELIC_TYPE};
+use super::tools_res::{MapEntrance, MazePlane, SimpleLevelGroup, GAME_RESOURCES};
 
 // AVATAR
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -298,7 +298,7 @@ impl Relic {
 
     pub fn to_equipment_relic_proto(&self) -> EquipRelic {
         EquipRelic {
-            ipnhjoomhdm: *RELIC_TYPE.get(&self.relic_id).unwrap_or(&0),
+            ipnhjoomhdm: self.relic_id % 10,
             // ?
             llepdadmfdo: 1 + self.internal_uid,
         }
