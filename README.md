@@ -1,81 +1,100 @@
-# Supported Version: 2.1.51, 2.1.52, 2.1.53
-Run the game by clicking run.bat file.
+![Grasscutter](https://socialify.git.ci/Grasscutters/Grasscutter/image?description=1&forks=1&issues=1&language=1&logo=https%3A%2F%2Fs2.loli.net%2F2022%2F04%2F25%2FxOiJn7lCdcT5Mw1.png&name=1&owner=1&pulls=1&stargazers=1&theme=Light)
+<div align="center"><img alt="Documentation" src="https://img.shields.io/badge/Wiki-Grasscutter-blue?style=for-the-badge&link=https://github.com/Grasscutters/Grasscutter/wiki&link=https://github.com/Grasscutters/Grasscutter/wiki"> <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/Grasscutters/Grasscutter?logo=java&style=for-the-badge"> <img alt="GitHub" src="https://img.shields.io/github/license/Grasscutters/Grasscutter?style=for-the-badge"> <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/Grasscutters/Grasscutter?style=for-the-badge"> <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/Grasscutters/Grasscutter/build.yml?branch=development&logo=github&style=for-the-badge"></div>
 
-Tool website: [https://freesr-tools.pages.dev](https://freesr-tools.pages.dev)
+<div align="center"><a href="https://discord.gg/T5vZU6UyeG"><img alt="Discord - Grasscutter" src="https://img.shields.io/discord/965284035985305680?label=Discord&logo=discord&style=for-the-badge"></a></div>
 
-Start battle by entering any calyx in the map, DON'T ATTACK THE ENEMIES, IT WON'T WORK (maybe)
+[EN](README.md) | [简中](docs/README_zh-CN.md) | [繁中](docs/README_zh-TW.md) | [FR](docs/README_fr-FR.md) | [ES](docs/README_es-ES.md) | [HE](docs/README_HE.md) | [RU](docs/README_ru-RU.md) | [PL](docs/README_pl-PL.md) | [ID](docs/README_id-ID.md) | [KR](docs/README_ko-KR.md) | [FIL/PH](docs/README_fil-PH.md) | [NL](docs/README_NL.md) | [JP](docs/README_ja-JP.md) | [IT](docs/README_it-IT.md) | [VI](docs/README_vi-VN.md)
 
-# RobinSR
-Original: [https://git.xeondev.com/reversedrooms/RobinSR/](https://git.xeondev.com/reversedrooms/RobinSR/)
+**Attention:** We always welcome contributors to the project. Before adding your contribution, please carefully read our [Code of Conduct](https://github.com/Grasscutters/Grasscutter/blob/stable/CONTRIBUTING.md).
 
-A Server emulator for the game [`Honkai: Star Rail`](https://hsr.hoyoverse.com/en-us/)
-![screenshot](https://git.xeondev.com/reversedrooms/RobinSR/raw/branch/master/screenshot.png)
+## Current features
 
-## Installation
+* Logging in
+* Combat
+* Friends list
+* Teleportation
+* Gacha system
+* Co-op *partially* works
+* Spawning monsters via console
+* Inventory features (receiving items/characters, upgrading items/characters, etc)
 
-### From Source
+## Quick setup guide
 
-#### Requirements
+**Note**: For support please join our [Discord](https://discord.gg/T5vZU6UyeG).
 
-- [Rust](https://www.rust-lang.org/tools/install)
+### Quick Start (automatic)
 
-**NOTE**: Nightly Rust is required to build the project. To install it, first install
-Rust itself, then run the following command:
+- Get [Java 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+- Get [MongoDB Community Server](https://www.mongodb.com/try/download/community)
+- Get game version REL4.0.x (If you don't have a 4.0.x client, you can find it here and open any of the links to download it):
+[4.0.x Client-github](https://github.com/JRSKelvin/GenshinRepository/blob/main/Version%204.0.0.md)
+[4.0.x Client-cloud drive](https://www.123pan.com/s/HoqUVv-U7SBA.html)
 
-```sh
-rustup toolchain install nightly
-rustup default nightly
+- Download the [latest Cultivation version](https://github.com/Grasscutters/Cultivation/releases/latest). Use the `.msi` installer.
+- After opening Cultivation (as admin), press the download button in the upper right corner. 
+- Click `Download All-in-One`
+- Click the gear in the upper right corner
+- Set the game Install path to where your game is located.
+- Set the Custom Java Path to `C:\Program Files\Java\jdk-17\bin\java.exe`
+- Leave all other settings on default
+
+- Click the small button next to launch.
+- Click the launch button.
+- Log in with whatever username you want. Password can be anything.
+
+### Building
+
+Grasscutter uses Gradle to handle dependencies & building.
+
+**Requirements:**
+
+- [Java Development Kit 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) or higher
+- [Git](https://git-scm.com/downloads)
+- [NodeJS](https://nodejs.org/en/download) (Optional, for building the handbook)
+
+##### Clone
+
+```shell
+git clone --recurse-submodules https://github.com/Grasscutters/Grasscutter.git
+cd Grasscutter
 ```
 
-#### Building
+##### Compile
 
-```sh
-git clone https://git.xeondev.com/reversedrooms/RobinSR.git
-cd RobinSR
-cargo install --path gameserver
-cargo install --path sdkserver
+**Note**: Handbook generation may fail on some systems. To disable the handbook generation, append `-PskipHandbook=1` to the `gradlew jar` command.
+
+Windows:
+
+```shell
+.\gradlew.bat # Setting up environments
+.\gradlew jar
 ```
 
-### From Pre-built Binaries
+Linux (GNU):
 
-Navigate to the [Releases](https://git.xeondev.com/reversedrooms/RobinSR/releases)
-page and download the latest release for your platform.
-
-## Usage
-
-To begin using the server, you need to run both the SDK server and the game server.
-
-If you installed from source, Rust's installer should have added .cargo/bin to your
-path, so simply run the following:
-
-```sh
-gameserver
-sdkserver
+```bash
+chmod +x gradlew
+./gradlew jar
 ```
 
-If you installed from pre-built binaries, navigate to the directory where you downloaded
-the binaries and either a) double-click on the following executable names or b)
-run the following in a terminal:
+##### Compiling the Handbook (Manually)
 
-```sh
-./gameserver
-./sdkserver
+With Gradle:
+
+```shell
+./gradlew generateHandbook
 ```
 
-## Connecting
-[Get 2.2 beta client](https://bhrpg-prod.oss-accelerate.aliyuncs.com/client/beta/20240322124944_scfGE0xJXlWtoJ1r/StarRail_2.1.51.zip),
-replace [mhypbase.dll](https://git.xeondev.com/reversedrooms/RobinSR/raw/branch/master/mhypbase.dll) file in your game folder, it will redirect game traffic (and also disable in-game censorship)
+With NPM:
 
-## Contributing
+```shell
+cd src/handbook
+npm install
+npm run build
+```
 
-Pull requests are welcome. For major changes, please open an issue first to discuss
-what you would like to change, and why.
+You can find the output jar in the root of the project folder.
 
-## Bug Reports
+### Troubleshooting 
 
-If you find a bug, please open an issue with as much detail as possible. If you
-can, please include steps to reproduce the bug.
-
-Bad issues such as "This doesn't work" will be closed immediately, be _sure_ to
-provide exact detailed steps to reproduce your bug. If it's hard to reproduce, try
-to explain it and write a reproducer as best as you can.
+For a list of common issues and solutions and to ask for help, please join [our Discord server](https://discord.gg/T5vZU6UyeG) and go to the support channel.
